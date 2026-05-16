@@ -1,0 +1,220 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>JavaScript CRUD</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        body{
+            background-color: rgb(255, 248, 240);
+        }
+
+        .navbar{
+            background-color: brown;
+        }
+
+        .navbar-brand{
+            color: white;
+            font-weight: bold;
+        }
+
+        .navbar-brand:hover{
+            color: white;
+        }
+
+        .foDoboz{
+            margin-top: 40px;
+        }
+
+        .card{
+            border-radius: 15px;
+        }
+
+        .btn-custom{
+            background-color: brown;
+            color: white;
+        }
+
+        .btn-custom:hover{
+            background-color: rgb(180, 60, 60);
+            color: white;
+        }
+
+        table{
+            margin-top: 30px;
+        }
+        .container-fluid{
+        display: flex;
+        align-items: center;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+
+                <a class="navbar-brand" href="#">
+                    JavaScript CRUD - Cukrászda
+                </a>
+
+            <div class="ms-auto">
+
+                <a href="index.html" class="btn btn-dark">
+                    ←
+                </a>
+
+            </div>
+
+        </div>
+    </nav>
+
+    <div class="container foDoboz">
+
+        <div class="card shadow p-4">
+
+            <h2 class="text-center mb-4">
+                Süti kezelő rendszer
+            </h2>
+
+            <div class="row">
+
+                <div class="col-md-4">
+                    <input type="text" id="nev" class="form-control" placeholder="Süti neve">
+                </div>
+
+                <div class="col-md-4">
+                    <input type="text" id="tipus" class="form-control" placeholder="Típus">
+                </div>
+
+                <div class="col-md-4">
+                    <input type="number" id="dijazott" class="form-control" placeholder="Díjazott 0 vagy 1">
+                </div>
+
+            </div>
+
+
+            <div class="text-center mt-4">
+                <button class="btn btn-custom" onclick="ujSuti()">
+                    Süti hozzáadása
+                </button>
+            </div>
+
+
+            <table class="table table-bordered table-striped text-center">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Név</th>
+                        <th>Típus</th>
+                        <th>Díjazott</th>
+                        <th>Műveletek</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tablaBody">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        let sutik = [
+            {
+                id: 1,
+                nev: "Süni",
+                tipus: "vegyes",
+                dijazott: 0
+            },
+            {
+                id: 2,
+                nev: "Eszterházy torta",
+                tipus: "torta",
+                dijazott: 1
+            },
+            {
+                id: 3,
+                nev: "Rigó Jancsi",
+                tipus: "csokoládés",
+                dijazott: 1
+            }
+        ];
+
+        function tablaMegjelenites(){
+            let body = document.getElementById("tablaBody");
+            body.innerHTML = "";
+            sutik.forEach((suti,index) => {
+                body.innerHTML += `
+                <tr>
+                    <td>${suti.id}</td>
+                    <td>${suti.nev}</td>
+                    <td>${suti.tipus}</td>
+                    <td>${suti.dijazott}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="modositas(${index})">
+                            Szerkesztés
+                        </button>
+
+                        <button class="btn btn-danger btn-sm" onclick="torles(${index})">
+                            Törlés
+                        </button>
+                    </td>
+                </tr>
+                `;
+            }
+        );
+
+        }
+
+        function ujSuti(){
+
+            let nev = document.getElementById("nev").value;
+            let tipus = document.getElementById("tipus").value;
+            let dijazott = document.getElementById("dijazott").value;
+
+            if(nev == "" || tipus == "" || dijazott == ""){
+                alert("Minden mezőt ki kell tölteni!");
+                return;
+            }
+            let uj = {
+                id: sutik.length + 1,
+                nev: nev,
+                tipus: tipus,
+                dijazott: dijazott
+            };
+            sutik.push(uj);
+            tablaMegjelenites();
+            document.getElementById("nev").value = "";
+            document.getElementById("tipus").value = "";
+            document.getElementById("dijazott").value = "";
+        }
+        function torles(index){
+            sutik.splice(index,1);
+            tablaMegjelenites();
+        }
+        function modositas(index){
+            let ujNev = prompt("Új név:", sutik[index].nev);
+            let ujTipus = prompt("Új típus:", sutik[index].tipus);
+            let ujDijazott = prompt("Díjazott:", sutik[index].dijazott);
+            sutik[index].nev = ujNev;
+            sutik[index].tipus = ujTipus;
+            sutik[index].dijazott = ujDijazott;
+            tablaMegjelenites();
+        }
+        tablaMegjelenites();
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
