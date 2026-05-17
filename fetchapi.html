@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="hu">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +9,7 @@
     <style>
 
         body{
-            background-color: rgb(255, 248, 240);
+            background-color: rgb(255,248,240);
         }
 
         .navbar{
@@ -24,11 +23,6 @@
 
         .navbar-brand:hover{
             color: white;
-        }
-
-        .container-fluid{
-            display: flex;
-            align-items: center;
         }
 
         .foDoboz{
@@ -45,7 +39,7 @@
         }
 
         .btn-custom:hover{
-            background-color: rgb(180, 60, 60);
+            background-color: rgb(180,60,60);
             color: white;
         }
 
@@ -55,7 +49,6 @@
 <body>
 
     <nav class="navbar navbar-expand-lg">
-
         <div class="container-fluid">
 
             <a class="navbar-brand" href="#">
@@ -67,15 +60,12 @@
                 <a href="index.html" class="btn btn-dark">
                     ←
                 </a>
-
+                
             </div>
-
         </div>
-
     </nav>
 
     <div class="container foDoboz">
-
         <div class="card shadow p-4">
 
             <h2 class="text-center mb-4">
@@ -83,19 +73,23 @@
             </h2>
 
             <div class="row">
-
                 <div class="col-md-4">
+
                     <input type="text" id="nev" class="form-control" placeholder="Süti neve">
+
                 </div>
 
                 <div class="col-md-4">
+
                     <input type="text" id="tipus" class="form-control" placeholder="Típus">
+
                 </div>
 
                 <div class="col-md-4">
-                    <input type="number" id="dijazott" class="form-control" placeholder="Díjazott">
-                </div>
 
+                    <input type="number" id="dijazott" class="form-control" placeholder="Díjazott">
+
+                </div>
             </div>
 
             <div class="text-center mt-4">
@@ -107,15 +101,16 @@
             </div>
 
             <table class="table table-bordered table-striped text-center mt-4">
-
                 <thead class="table-dark">
 
                     <tr>
+
                         <th>ID</th>
                         <th>Név</th>
                         <th>Típus</th>
                         <th>Díjazott</th>
                         <th>Műveletek</th>
+
                     </tr>
 
                 </thead>
@@ -123,10 +118,106 @@
                 <tbody id="tablaBody"></tbody>
 
             </table>
-
         </div>
-
     </div>
 
+    <script>
+        function adatokBetoltese(){
+            fetch("api.php")
+            .then(response => response.json())
+            .then(adatok => {
+                let body = document.getElementById("tablaBody");
+                body.innerHTML = "";
+                adatok.forEach(suti => {
+                    body.innerHTML += `
+                    <tr>
+
+                        <td>${suti.id}</td>
+                        <td>${suti.nev}</td>
+                        <td>${suti.tipus}</td>
+                        <td>${suti.dijazott}</td>
+
+                        <td>
+
+                            <button class="btn btn-warning btn-sm me-2" onclick="modositas(${suti.id},'${suti.nev}','${suti.tipus}','${suti.dijazott}')">
+                                Szerkesztés
+                            </button>
+
+                            <button class="btn btn-danger btn-sm" onclick="torles(${suti.id})">
+                                Törlés
+                            </button>
+
+                        </td>
+                    </tr>
+
+                    `;
+                });
+            });
+        }
+
+        function ujSuti(){
+            let nev = document.getElementById("nev").value;
+            let tipus = document.getElementById("tipus").value;
+            let dijazott = document.getElementById("dijazott").value;
+            fetch("api.php",{
+                method: "POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify({
+
+                    nev: nev,
+                    tipus: tipus,
+                    dijazott: dijazott
+
+                })
+            })
+            .then(response => response.json())
+            .then(() => {
+
+                adatokBetoltese();
+
+            });
+        }
+
+        function torles(id){
+            fetch("api.php?id=" + id,{
+
+                method: "DELETE"
+
+            })
+            .then(response => response.json())
+            .then(() => {
+
+                adatokBetoltese();
+            });
+        }
+
+        function modositas(id,nev,tipus,dijazott){
+            let ujNev = prompt("Új név:",nev);
+            let ujTipus = prompt("Új típus:",tipus);
+            let ujDijazott = prompt("Díjazott:",dijazott);
+            fetch("api.php",{
+                method: "PUT",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify({
+
+                    id: id,
+                    nev: ujNev,
+                    tipus: ujTipus,
+                    dijazott: ujDijazott
+
+                })
+            })
+            .then(response => response.json())
+            .then(() => {
+
+                adatokBetoltese();
+            });
+        }
+
+        adatokBetoltese();
+    </script>
 </body>
-</html>
